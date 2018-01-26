@@ -2,7 +2,6 @@
 const fetch = require('node-fetch')
 
 function check(url, invocationParameters,  expectedResultData, expectedResultStatus) {
-
     const checkResult = { // this is the object you need to set and return
         urlChecked: url,
         resultData: null,
@@ -11,8 +10,33 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
         resultDataAsExpected: null
     }
 
+    let params = Object.keys(invocationParameters);
+    let parametri = "";
+    for(let p of params) {
+        parametri += p + "=" + invocationParameters[p] + "&";
+    }
 
+    //Tolgo la & finale.
+    parametri = parametri.substring(0, parametri.length-1);
+    let page = url + "?" + parametri;
 
+    return fetch(page)
+        .then(response => {
+            //response.status;
+            return response.json();
+        })
+        .then(risposta => {
+            let asExpected = compareResults(expectedResultData,risposta);
+            let expectedStatusCode = (expectedResultStatus == risposta.status);
+
+            checkResult.url = risposta.url;
+            checkResult.resultData = risposta.resultData;
+            checkResult.resultStatus = risposta.status;
+            checkResult.statusTestPassed = expectedStatusCode;
+            checkResult.resultDataAsExpected = asExpected;
+
+            return checkResult;
+        })
 }
 
 
