@@ -11,18 +11,19 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
     }
 
     let params = Object.keys(invocationParameters);
+    console.log("dfff" + params);
     let parametri = "";
-    for(let p of params) {
-        parametri += p + "=" + invocationParameters[p] + "&";
+    for(let i = 0; i < params.length; i++) {
+        parametri += invocationParameters[i] + "=" + invocationParameters[params[i]] + "&";
+        console.log("sssss" + invocationParameters[i]);
     }
-
+  
     //Tolgo la & finale.
     parametri = parametri.substring(0, parametri.length-1);
     let page = url + "?" + parametri;
 
     return fetch(page)
         .then(response => {
-            //response.status;
             return response.json();
         })
         .then(risposta => {
@@ -36,6 +37,9 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
             checkResult.resultDataAsExpected = asExpected;
 
             return checkResult;
+        })
+        .catch(error => {
+            console.log(error);
         })
 }
 
@@ -51,4 +55,5 @@ function compareResults(expected, actual) {
     return true
 }
 
-module.exports = check
+
+module.exports = check;
